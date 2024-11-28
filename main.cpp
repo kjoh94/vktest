@@ -78,10 +78,11 @@ int main() {
     instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instanceCreateInfo.pApplicationInfo = &appInfo;
 
-#if 1
+#if 0
     // 검증 레이어 활성화 (선택 사항)
     const char* validationLayers[] = {
-        "VK_LAYER_KHRONOS_validation"
+        //"VK_LAYER_KHRONOS_validation",
+        "VK_LAYER_LUNARG_api_dump"
     };
 
     // 활성화할 인스턴스 확장 (예: 디버그 메시지를 위한 확장)
