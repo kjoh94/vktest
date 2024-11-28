@@ -1,0 +1,20 @@
+#version 450
+#extension GL_EXT_buffer_reference : enable
+#extension GL_EXT_scalar_block_layout : enable
+#extension GL_ARB_gpu_shader_int64 : enable
+
+layout(push_constant) uniform PushConstants {
+    uint64_t src;
+    uint64_t dst;
+} pc;
+
+layout(buffer_reference, std430, buffer_reference_align = 16) buffer FloatBuffer {
+    float data[];
+};
+
+void main() {
+    uint id = gl_GlobalInvocationID.x;
+    FloatBuffer srcBuffer = FloatBuffer(pc.src);
+    FloatBuffer dstBuffer = FloatBuffer(pc.dst);
+    dstBuffer.data[id] = srcBuffer.data[id];
+}
