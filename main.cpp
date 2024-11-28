@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cassert>
 #include <cstring>
+#include <stdio.h>
 
 const uint32_t N = 16;       // 데이터 크기
 //const uint32_t LOCAL_SIZE = 256; // 워크그룹 크기
@@ -26,7 +27,40 @@ std::vector<char> readFile(const std::string& filename) {
     return buffer;
 }
 
+
+void checkValidationLayerSupport() {
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, NULL);
+
+    //VkLayerProperties availableLayers[layerCount];
+    VkLayerProperties availableLayers[128];
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers);
+
+    const char* validationLayerName = "VK_LAYER_KHRONOS_validation";
+
+    int layerFound = 0;
+    for (uint32_t i = 0; i < layerCount; i++) {
+        if (strcmp(validationLayerName, availableLayers[i].layerName) == 0) {
+            layerFound = 1;
+            break;
+        }
+    }
+
+    if (layerFound) {
+        printf("Validation layer supported: %s\n", validationLayerName);
+    } else {
+        printf("Validation layer not found: %s\n", validationLayerName);
+    }
+
+    printf("Available Vulkan layers:\n");
+    for (uint32_t i = 0; i < layerCount; i++) {
+        printf("  %s: %s\n", availableLayers[i].layerName, availableLayers[i].description);
+    }
+}
+
+
 int main() {
+    checkValidationLayerSupport();
     // Vulkan 인스턴스 생성
     VkInstance instance;
 
@@ -44,7 +78,7 @@ int main() {
     instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instanceCreateInfo.pApplicationInfo = &appInfo;
 
-#if 0
+#if 1
     // 검증 레이어 활성화 (선택 사항)
     const char* validationLayers[] = {
         "VK_LAYER_KHRONOS_validation"
